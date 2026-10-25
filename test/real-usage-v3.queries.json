@@ -1,0 +1,50 @@
+{
+  "note": "v3 (2026-10-25): 期望全部锁定到具体仓库。Q5 为精确安装目标 github:Small-tailqwq/dsh-deep-whale（用户确认在用；旧期望 maid-atelier 移除）；Q1/Q2/Q4 按记录 title 匹配 owner/repo（bowenliang123/dsh-context、Jiao-XXX/dsh-auto-approve、kenryu42/cc-safety-net）——它们的安装目标是 npm 形式，按名称匹配会误中同名克隆。matches() 相应支持 title 全等（大小写不敏感）与 github 目标的 #ref 后缀。Q3 维持名称匹配（用户明确不改）。v2 文件保持不变（冻结规则）。",
+  "positive": [
+    {
+      "query": "管理上下文的工具，要看到各轮的信息中各种内容的占比",
+      "alts": [
+        "context management tool showing content share per turn",
+        "audit context composition by content type",
+        "inspect context usage breakdown"
+      ],
+      "expected": "bowenliang123/dsh-context"
+    },
+    {
+      "query": "支持一个介于 workspace-write 和 danger-full-access 的模式，尽可能自动且拦截危险命令和工作区外写入，改为转审批",
+      "alts": [
+        "semi-auto approval mode between workspace-write and danger-full-access",
+        "auto approve safe workspace edits and ask for dangerous commands or outside writes",
+        "middle ground sandbox with approval"
+      ],
+      "expected": "Jiao-XXX/dsh-auto-approve"
+    },
+    {
+      "query": "我需要在手机上也能使用 PC 端的 dsh",
+      "alts": [
+        "use DSH from my phone",
+        "mobile access to desktop DSH",
+        "remote control DSH from mobile"
+      ],
+      "expected": "dsh-mobile"
+    },
+    {
+      "query": "帮我拦截危险的命令",
+      "alts": [
+        "block dangerous shell commands",
+        "command safety guard",
+        "prevent destructive commands"
+      ],
+      "expected": "kenryu42/cc-safety-net"
+    },
+    {
+      "query": "deepseek娘形象的 dsh 皮肤",
+      "alts": [
+        "DeepSeek whale girl theme skin",
+        "whale girl theme skin",
+        "apply a DeepSeek mascot girl look to the DSH web UI"
+      ],
+      "expected": "github:Small-tailqwq/dsh-deep-whale"
+    }
+  ]
+}

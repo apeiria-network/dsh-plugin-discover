@@ -1,0 +1,50 @@
+{
+  "note": "v2 (2026-10-24): Q5 的三条改写重写。原冻结版 real-usage.queries.json 的 Q5 alts 与『deepseek娘(鲸鱼娘)』需求不符(『maid atelier skin』蹭了期望包名),用户判定该条不可用。本文件只改 Q5 的 alts,其余四条与冻结版逐字相同。原文件保持不变。",
+  "positive": [
+    {
+      "query": "管理上下文的工具，要看到各轮的信息中各种内容的占比",
+      "alts": [
+        "context management tool showing content share per turn",
+        "audit context composition by content type",
+        "inspect context usage breakdown"
+      ],
+      "expected": "dsh-context"
+    },
+    {
+      "query": "支持一个介于 workspace-write 和 danger-full-access 的模式，尽可能自动且拦截危险命令和工作区外写入，改为转审批",
+      "alts": [
+        "semi-auto approval mode between workspace-write and danger-full-access",
+        "auto approve safe workspace edits and ask for dangerous commands or outside writes",
+        "middle ground sandbox with approval"
+      ],
+      "expected": "dsh-auto-approve"
+    },
+    {
+      "query": "我需要在手机上也能使用 PC 端的 dsh",
+      "alts": [
+        "use DSH from my phone",
+        "mobile access to desktop DSH",
+        "remote control DSH from mobile"
+      ],
+      "expected": "dsh-mobile"
+    },
+    {
+      "query": "帮我拦截危险的命令",
+      "alts": [
+        "block dangerous shell commands",
+        "command safety guard",
+        "prevent destructive commands"
+      ],
+      "expected": "cc-safety-net"
+    },
+    {
+      "query": "deepseek娘形象的 dsh 皮肤",
+      "alts": [
+        "DeepSeek whale girl theme skin",
+        "whale girl theme skin",
+        "apply a DeepSeek mascot girl look to the DSH web UI"
+      ],
+      "expected": "@smalltailqwq/dsh-client-ui-skin-maid-atelier"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Plugin Discover",
+    "description": "Search DSH plugins locally with Chinese natural language: deterministic ranking, quality filters, install targets. No server, no model calls, never installs."
+  }
+}

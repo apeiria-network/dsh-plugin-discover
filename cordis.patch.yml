@@ -1,0 +1,3 @@
+- insert:
+    - id: discover
+      name: dsh-plugin-discover

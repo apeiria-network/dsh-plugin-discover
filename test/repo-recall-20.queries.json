@@ -1,0 +1,187 @@
+{
+  "frozenAt": "2026-10-24",
+  "source": "Selected from the previous 20-query acceptance suite; theme/skin query replaced with image generation to keep it separate from the user's 5 real-usage cases.",
+  "note": "Expected plugins are functional matches chosen manually from prior top-10 results; they are not all the current top-1. This is a frozen regression/recall set, not a blind user-acceptance set. Do not edit after seeing test results.",
+  "positive": [
+    {
+      "query": "任务完成时给我发微信通知",
+      "alts": [
+        "notify on WeCom when a turn ends",
+        "wecom webhook notification turn end",
+        "send a phone message after the agent finishes a task"
+      ],
+      "expected": "dsh-wecom-notify"
+    },
+    {
+      "query": "给网页截图做 OCR 识别文字",
+      "alts": [
+        "OCR text from a screenshot",
+        "screenshot vision OCR",
+        "read text in an image"
+      ],
+      "expected": "dsh-ocr-local"
+    },
+    {
+      "query": "想要一个终端 TUI 界面",
+      "alts": [
+        "terminal TUI interface",
+        "text user interface terminal",
+        "run commands in a terminal"
+      ],
+      "expected": "dsh-oc-tui"
+    },
+    {
+      "query": "跨会话记住项目上下文",
+      "alts": [
+        "persistent project memory across sessions",
+        "project memory recall",
+        "remember project context between sessions"
+      ],
+      "expected": "dsh-projects-mode"
+    },
+    {
+      "query": "把侧边栏折叠起来并美化",
+      "alts": [
+        "collapsible themed sidebar",
+        "sidebar UI customization",
+        "fold the sidebar"
+      ],
+      "expected": "dsh-sidebar-modes"
+    },
+    {
+      "query": "帮我做代码评审和 PR review",
+      "alts": [
+        "code review and pull request review",
+        "review PR changes",
+        "static code review"
+      ],
+      "expected": "dsh-reviewer-bot"
+    },
+    {
+      "query": "编排多个 agent 协同工作",
+      "alts": [
+        "multi-agent orchestration",
+        "agent team coordination",
+        "orchestrate subagents"
+      ],
+      "expected": "dsh-agent-teams"
+    },
+    {
+      "query": "浏览器自动化操作网页",
+      "alts": [
+        "browser automation control web pages",
+        "playwright browser automation",
+        "automate a website"
+      ],
+      "expected": "dsh-playwright-browser"
+    },
+    {
+      "query": "把文字用语音朗读出来",
+      "alts": [
+        "text to speech voice reading",
+        "TTS speak text aloud",
+        "voice output"
+      ],
+      "expected": "dsh-xiaomi-tts"
+    },
+    {
+      "query": "翻译对话内容",
+      "alts": [
+        "translate conversation content",
+        "conversation translation",
+        "translate chat messages"
+      ],
+      "expected": "deepseek-harness-translation"
+    },
+    {
+      "query": "读取 PDF 文档内容",
+      "alts": [
+        "read PDF document content",
+        "PDF text extraction",
+        "parse a PDF file"
+      ],
+      "expected": "@peanutcd2005/dsh-plugin-pdf-text"
+    },
+    {
+      "query": "生成 PPT 幻灯片",
+      "alts": [
+        "generate a PowerPoint slide deck",
+        "create presentation slides",
+        "pptx generation"
+      ],
+      "expected": "dsh-ppt-creator"
+    },
+    {
+      "query": "查询 SQLite 数据库",
+      "alts": [
+        "query a SQLite database",
+        "SQLite database access",
+        "run SQL queries"
+      ],
+      "expected": "dsh-sql"
+    },
+    {
+      "query": "监控 token 用量和成本",
+      "alts": [
+        "monitor token usage and cost",
+        "token metering",
+        "usage and billing stats"
+      ],
+      "expected": "dsh-token-monitor"
+    },
+    {
+      "query": "定时执行任务",
+      "alts": [
+        "schedule recurring tasks",
+        "cron scheduled jobs",
+        "run a task on a timer"
+      ],
+      "expected": "dsh-cron-tasks"
+    },
+    {
+      "query": "管理 GitHub issue",
+      "alts": [
+        "manage GitHub issues",
+        "GitHub issue tracker",
+        "create and update issues"
+      ],
+      "expected": "gh-tea-npm-dsh"
+    },
+    {
+      "query": "本地离线搜索文件",
+      "alts": [
+        "local offline file search",
+        "search files offline",
+        "local full text search"
+      ],
+      "expected": "dsh-fulltext-search"
+    },
+    {
+      "query": "生成一张图片",
+      "alts": [
+        "generate an image",
+        "create a picture from a prompt",
+        "image generation tool"
+      ],
+      "expected": "dsh-generation-image"
+    },
+    {
+      "query": "连接 MCP 服务器",
+      "alts": [
+        "connect an MCP server",
+        "MCP client integration",
+        "add a model context protocol server"
+      ],
+      "expected": "dsh-mcp-manager"
+    },
+    {
+      "query": "清理过大的会话日志",
+      "alts": [
+        "clean up oversized session logs",
+        "session log compaction",
+        "reduce session storage"
+      ],
+      "expected": "@ashulam/dsh-session-delete"
+    }
+  ]
+}
