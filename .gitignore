@@ -5,9 +5,12 @@ dsh-plugin-discovery-report.md
 # 核验用临时目录：下载的模型、tokenizer、测试脚本（不进仓库）
 /.verify/
 /.temp-test/
+/.pnpm-store/
 
-# 模型包源码与权重：仅本地，不上远程库
-/models/
+# 模型包：代码与 manifest 入 git，权重、tokenizer 与打包产物不入
+/models/**/*.onnx
+/models/**/tokenizer.json
+/models/**/node_modules/
 
 # 内部文档与评测报告：仅本地留存，不上远程库
 /HANDOFF.md

@@ -1,0 +1,57 @@
+{
+  "name": "dsh-plugin-discover-model",
+  "version": "0.1.0",
+  "description": "Optional multilingual-e5-small quantized ONNX embedder for dsh-plugin-discover: 384 dimensions, 512 tokens, mean pooling, L2 normalization.",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "embeddings",
+    "multilingual-e5",
+    "onnx",
+    "onnxruntime",
+    "local-first"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apeiria-network/dsh-plugin-discover.git",
+    "directory": "models/multilingual-e5-small"
+  },
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./server": "./server.js",
+    "./manifest.json": "./manifest.json",
+    "./model": "./model_quantized.onnx",
+    "./tokenizer": "./tokenizer.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "server.js",
+    "verify.js",
+    "model_quantized.onnx",
+    "tokenizer.json",
+    "config.json",
+    "tokenizer_config.json",
+    "special_tokens_map.json",
+    "manifest.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "dsh-plugin-discover-model-verify": "verify.js"
+  },
+  "scripts": {
+    "verify": "node verify.js",
+    "serve": "node server.js"
+  },
+  "dependencies": {
+    "@huggingface/tokenizers": "^0.2.0",
+    "onnxruntime-node": "^1.30.0"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "license": "MIT"
+}
