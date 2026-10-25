@@ -4,7 +4,7 @@ dsh-plugin-discovery-report.md
 
 # 核验用临时目录：下载的模型、tokenizer、测试脚本（不进仓库）
 /.verify/
-/.temp-test/
+/.temp/
 /.pnpm-store/
 
 # 模型包：代码与 manifest 入 git，权重、tokenizer 与打包产物不入
@@ -17,6 +17,7 @@ dsh-plugin-discovery-report.md
 /dsh-plugin-discover-design-v2.md
 /dsh-plugin-discover-design(deprecate).md
 /reports/
+/DEBUGGING.md
 
 # 构建产物
 *.tgz
