@@ -157,19 +157,20 @@ Lexical search (the default) covers most needs. Vector mode reranks candidates w
 The cost is a separate model package `dsh-plugin-discover-model` (int8-quantized [multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small), 384 dimensions): about 80 MB to download, roughly 420 MB installed with the ONNX runtime; runtime memory about 400–500 MB. The model runs in a child process, exits after 5 minutes idle, and costs nothing while vector mode is off; ONNX defaults to 4 threads (override with the `DSH_MODEL_THREADS` environment variable). It is not a dependency of the plugin; only `model pull` installs it:
 
 ```bash
-# from npm (once published)
-dsh-plugin-discover model pull --spec dsh-plugin-discover-model@0.1.0
+# default: install from npm
+dsh-plugin-discover model pull
 
-# from a local directory
+# fallback: install from the GitHub Release asset
+dsh-plugin-discover model pull --spec "https://github.com/apeiria-network/dsh-plugin-discover/releases/download/model-v0.1.0/dsh-plugin-discover-model-0.1.0.tgz"
+
+# development: install from a local directory or packed tarball
 dsh-plugin-discover model pull --spec "link:D:\dsh-plugin-discover\models\multilingual-e5-small"
-
-# from a packed tarball
 dsh-plugin-discover model pull --spec "file:D:\path\to\dsh-plugin-discover-model-0.1.0.tgz"
 
 dsh-plugin-discover model status
 ```
 
-`model pull` verifies every file against the manifest (SHA-256 by default) and writes a `model.json` pointer into the index directory. pnpm may exit with an `ERR_PNPM_IGNORED_BUILDS` warning because `onnxruntime-node`'s build script is skipped — the prebuilt CPU binary still works; it is a warning, not a failure.
+`model pull` installs the package into the current DSH profile, verifies every file against the manifest (SHA-256 by default), and writes a `model.json` pointer into the index directory. pnpm may exit with an `ERR_PNPM_IGNORED_BUILDS` warning because `onnxruntime-node`'s build script is skipped — the prebuilt CPU binary still works; it is a warning, not a failure. Other install failures return a non-zero exit code and keep the installed version in place.
 
 Once installed, set **Vector search enhancement** on the plugin detail page to:
 

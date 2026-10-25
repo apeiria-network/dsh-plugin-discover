@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin-discover",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Find DeepSeek Harness plugins with a local, model-free index: Chinese natural-language search, quality filters, deterministic ranking, and install targets — never installs anything.",
   "type": "module",
   "main": "index.js",

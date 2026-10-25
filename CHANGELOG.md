@@ -1,5 +1,11 @@
 # 更新日志
 
+## 1.0.1 — 2026-10-25
+
+- **模型包改为 npm 分发**：`dsh-plugin-discover-model@0.1.0` 已发布到 npm，`model pull` 不带参数即可安装；GitHub Release 资产保留为备用渠道。
+- **修复 `model pull` 假成功**：pnpm 失败（404、网络错误等）现在返回非零退出码且不覆盖 `model.json`；只有 `ERR_PNPM_IGNORED_BUILDS` 视为警告。若已装旧版本，会明确提示「仍可用但未更新」。
+- 模型包代码（index/server/verify/manifest 等；权重与 tokenizer 除外）纳入仓库。
+
 ## 1.0.0 — 2026-10-25
 
 首个发布版本。

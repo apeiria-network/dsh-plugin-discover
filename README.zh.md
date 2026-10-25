@@ -156,19 +156,20 @@ DSH 插件不能向 `dsh` 命令注册子命令，所以 CLI 作为包自带的 
 代价是一个独立模型包 `dsh-plugin-discover-model`（int8 量化的 [multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small)，384 维）：下载约 80 MB，连同 ONNX 运行时装完约 420 MB；运行时内存约 400–500 MB。模型跑在子进程，空闲 5 分钟自动退出，不开向量时零开销；ONNX 默认 4 线程（可用环境变量 `DSH_MODEL_THREADS` 覆盖）。它不是主插件的依赖，只有 `model pull` 才装：
 
 ```bash
-# 从 npm（发布后）
-dsh-plugin-discover model pull --spec dsh-plugin-discover-model@0.1.0
+# 默认：从 npm 安装
+dsh-plugin-discover model pull
 
-# 从本地目录
+# 备用：从 GitHub Release 资产安装
+dsh-plugin-discover model pull --spec "https://github.com/apeiria-network/dsh-plugin-discover/releases/download/model-v0.1.0/dsh-plugin-discover-model-0.1.0.tgz"
+
+# 开发：从本地目录或 tarball 安装
 dsh-plugin-discover model pull --spec "link:D:\dsh-plugin-discover\models\multilingual-e5-small"
-
-# 从 tarball 文件
 dsh-plugin-discover model pull --spec "file:D:\path\to\dsh-plugin-discover-model-0.1.0.tgz"
 
 dsh-plugin-discover model status
 ```
 
-`model pull` 按 manifest 逐文件校验（默认 SHA-256），并在索引目录写 `model.json` 指针。安装时 pnpm 可能以 `ERR_PNPM_IGNORED_BUILDS` 警告 `onnxruntime-node` 的构建脚本被跳过——预编译 CPU 二进制仍然可用，这是警告不是失败。
+`model pull` 把模型包装进当前 DSH profile，按 manifest 逐文件校验（默认 SHA-256），并在索引目录写 `model.json` 指针。安装时 pnpm 可能以 `ERR_PNPM_IGNORED_BUILDS` 警告 `onnxruntime-node` 的构建脚本被跳过——预编译 CPU 二进制仍然可用，这是警告不是失败；其他安装失败会返回非零退出码，并保留已安装的版本。
 
 装好后，在插件详情页把「向量化检索增强」改为：
 
