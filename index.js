@@ -196,8 +196,9 @@ export function apply(ctx, config) {
         description: 'Up to three model-written rewrites: English/term version, 3–5 capability keywords, and one usage-scenario sentence. The English rewrite is mandatory for Chinese queries.',
       },
       limit: {
-        type: 'number',
-        description: 'Number of results, 1–20. Omit to use the configured result limit (default 10).',
+        type: 'integer',
+        default: 10,
+        description: 'Number of results. Omit this parameter unless the user explicitly asks for a specific count — the configured default is 10 (hard cap 20).',
       },
       explain: {
         type: 'string',
