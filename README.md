@@ -99,6 +99,8 @@ The parameters of `plugin_discover` are filled in by the session model; you neve
 | `queryAlts` | string[] | Up to 3 rewrites: an English/term version (required for Chinese), 3–5 capability keywords, one usage-scenario sentence. |
 | `limit` | number | Result count, 1–20; defaults to the configured value when omitted. |
 | `explain` | string | A result id / exact name / install target; returns that record without searching. |
+| `readme` | boolean | With `explain`: also returns the plugin's README. |
+| `readmeMaxChars` | integer | README character cap, default 200000. |
 | `refresh` | boolean | Returns immediately; builds/updates the index in the background. |
 | `filters` | object | Temporary override of `preset` (strict/balanced/loose/off) and `minVerificationLevel` (0–5). |
 
@@ -138,7 +140,8 @@ dsh-plugin-discover build   [--index-dir <dir>] [--json] [--quiet]
 dsh-plugin-discover status  [--index-dir <dir>] [--json]
 dsh-plugin-discover search  <query> [--alt <text>]... [--limit <n>] \
                              [--preset strict|balanced|loose|off] \
-                             [--min-verification <0-5>] [--explain <id>] [--json]
+                             [--min-verification <0-5>] [--explain <id>] \
+                             [--readme] [--readme-max-chars <n>] [--json]
 dsh-plugin-discover model status [--index-dir <dir>] [--profile <name>] [--json]
 dsh-plugin-discover model pull   [--spec <spec>] [--profile <name>] \
                                   [--index-dir <dir>] [--dry-run] [--no-verify] [--json]

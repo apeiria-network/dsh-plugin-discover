@@ -96,8 +96,10 @@ AI 会调用 `plugin_discover` 检索并解释结果，例如：
 |---|---|---|
 | `query` | string | 用户原话，不转述。检索必填；`explain` / `refresh` 时传 `""`。 |
 | `queryAlts` | string[] | 最多 3 条改写：英文/术语版（中文查询必需）、3–5 个能力词、一句使用场景。 |
-| `limit` | number | 返回条数，1–20；省略时用配置值。 |
+| `limit` | integer | 返回条数，1–20；省略时用配置值。 |
 | `explain` | string | 传结果 id / 精确名称 / 安装目标，返回该条完整记录，不检索。 |
+| `readme` | boolean | 与 `explain` 同用：同时返回该插件的 README 原文。 |
+| `readmeMaxChars` | integer | 与 `explain` 同用：README 字符上限，默认 200000。 |
 | `refresh` | boolean | 立即返回，后台建/更新索引。 |
 | `filters` | object | 临时覆盖 `preset`（strict/balanced/loose/off）与 `minVerificationLevel`（0–5）。 |
 
@@ -137,7 +139,8 @@ dsh-plugin-discover build   [--index-dir <dir>] [--json] [--quiet]
 dsh-plugin-discover status  [--index-dir <dir>] [--json]
 dsh-plugin-discover search  <query> [--alt <text>]... [--limit <n>] \
                              [--preset strict|balanced|loose|off] \
-                             [--min-verification <0-5>] [--explain <id>] [--json]
+                             [--min-verification <0-5>] [--explain <id>] \
+                             [--readme] [--readme-max-chars <n>] [--json]
 dsh-plugin-discover model status [--index-dir <dir>] [--profile <name>] [--json]
 dsh-plugin-discover model pull   [--spec <spec>] [--profile <name>] \
                                   [--index-dir <dir>] [--dry-run] [--no-verify] [--json]

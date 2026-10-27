@@ -1,5 +1,10 @@
 # 更新日志
 
+## 1.0.2 — 2026-10-27
+
+- **`explain` 可以同时取回 README**：`plugin_discover` 新增 `readme` 与 `readmeMaxChars` 参数。`readme: true` 时，在插件详情之外返回该插件对应仓库的 README 原文（GitHub raw → npm CDN），默认上限 200,000 字符，超限时标记 `truncated`。CLI 对应 `search --explain <id> --readme [--readme-max-chars <n>]`。
+- **`limit` 参数补充默认值与说明**：类型改为 `integer`，默认 10，描述明确「用户明确要求条数时才传；硬上限 20」。
+
 ## 1.0.1 — 2026-10-25
 
 - **模型包改为 npm 分发**：`dsh-plugin-discover-model@0.1.0` 已发布到 npm，`model pull` 不带参数即可安装；GitHub Release 资产保留为备用渠道。
