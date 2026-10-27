@@ -87,6 +87,8 @@ your original words + up to 3 AI rewrites
 - **Chinese queries need an English rewrite**: plugin names, topics, and descriptions in the catalog are English; the AI adds the rewrite automatically — you don't need to do anything.
 - **Not every term must match**: lexical search combines terms with OR, so long Chinese sentences still return results; names and topics weigh more than descriptions.
 - **`noMatch` is a correct result**: when there is not enough evidence that a matching plugin exists, the tool returns empty and suggests rephrasing instead of forcing a candidate. Better empty than misleading.
+- **Duplicate entries are merged**: one card per install target and upstream repository; forks and re-uploaded copies fold into the upstream and no longer appear separately. Same-named but distinct projects are never force-merged.
+- **Uninstallable entries are not returned**: plugins whose upstream repository is gone and that can only be installed from GitHub do not appear in results.
 - **The local index goes stale**: the report header carries a "data as of" date; when the index exceeds the update cycle (one week by default), the next search refreshes it first and waits for success; only a failed refresh falls back to the old index, with a clear notice.
 
 ## Tool parameters
@@ -99,6 +101,8 @@ The parameters of `plugin_discover` are filled in by the session model; you neve
 | `queryAlts` | string[] | Up to 3 rewrites: an English/term version (required for Chinese), 3–5 capability keywords, one usage-scenario sentence. |
 | `limit` | number | Result count, 1–20; defaults to the configured value when omitted. |
 | `explain` | string | A result id / exact name / install target; returns that record without searching. |
+| `readme` | boolean | With `explain`: also returns the plugin's README. |
+| `readmeMaxChars` | integer | README character cap, default 200000. |
 | `refresh` | boolean | Returns immediately; builds/updates the index in the background. |
 | `filters` | object | Temporary override of `preset` (strict/balanced/loose/off) and `minVerificationLevel` (0–5). |
 
@@ -138,7 +142,8 @@ dsh-plugin-discover build   [--index-dir <dir>] [--json] [--quiet]
 dsh-plugin-discover status  [--index-dir <dir>] [--json]
 dsh-plugin-discover search  <query> [--alt <text>]... [--limit <n>] \
                              [--preset strict|balanced|loose|off] \
-                             [--min-verification <0-5>] [--explain <id>] [--json]
+                             [--min-verification <0-5>] [--explain <id>] \
+                             [--readme] [--readme-max-chars <n>] [--json]
 dsh-plugin-discover model status [--index-dir <dir>] [--profile <name>] [--json]
 dsh-plugin-discover model pull   [--spec <spec>] [--profile <name>] \
                                   [--index-dir <dir>] [--dry-run] [--no-verify] [--json]
@@ -202,6 +207,7 @@ Network behavior (only `high` goes online):
 - Chinese queries depend on the AI's English rewrite; a drifted rewrite can pull in adjacent plugins or miss the target. The evidence gates suppress part of it, not all of it.
 - Some broad scenarios (e.g. "use it from my phone" needs) may recall weakly.
 - `updatedAt` comes from catalog data; entries outside the catalog show no update date.
+- Upstream detection relies on the catalog title; copies without one may still appear as separate entries.
 - Vector mode is off by default; pull the model package before enabling it.
 - Verified on Windows only; macOS / Linux should work in theory but are untested.
 

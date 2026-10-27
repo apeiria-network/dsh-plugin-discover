@@ -86,6 +86,8 @@ AI 会调用 `plugin_discover` 检索并解释结果，例如：
 - **中文查询需要英文改写**：目录里的插件名、标签、描述都是英文，AI 会自动补英文/术语改写，你不用管。
 - **不要求所有词都命中**：词面检索按 OR 组合，中文长句也能出结果；名称和标签的权重高于描述。
 - **`noMatch` 是正确结果**：没有足够证据表明存在匹配插件时，工具返回空并建议换说法，而不是硬凑一个。宁可空，不误导。
+- **重复条目会合并**：同一个安装目标、同一个上游仓库只保留一张卡；fork、重传的副本并入上游，不再分别出现。同名但描述不同的独立项目不会被强行合并。
+- **无法安装的条目不返回**：上游仓库已删除、且只能从 GitHub 安装的插件不进入结果。
 - **本地索引数据会过期**：报告头部带"数据截至"；索引超过更新周期（默认一周）时，下次检索会先自动刷新、等待成功后再出结果；刷新失败才用旧索引兜底，并明确提示。
 
 ## 工具参数
@@ -96,8 +98,10 @@ AI 会调用 `plugin_discover` 检索并解释结果，例如：
 |---|---|---|
 | `query` | string | 用户原话，不转述。检索必填；`explain` / `refresh` 时传 `""`。 |
 | `queryAlts` | string[] | 最多 3 条改写：英文/术语版（中文查询必需）、3–5 个能力词、一句使用场景。 |
-| `limit` | number | 返回条数，1–20；省略时用配置值。 |
+| `limit` | integer | 返回条数，1–20；省略时用配置值。 |
 | `explain` | string | 传结果 id / 精确名称 / 安装目标，返回该条完整记录，不检索。 |
+| `readme` | boolean | 与 `explain` 同用：同时返回该插件的 README 原文。 |
+| `readmeMaxChars` | integer | 与 `explain` 同用：README 字符上限，默认 200000。 |
 | `refresh` | boolean | 立即返回，后台建/更新索引。 |
 | `filters` | object | 临时覆盖 `preset`（strict/balanced/loose/off）与 `minVerificationLevel`（0–5）。 |
 
@@ -137,7 +141,8 @@ dsh-plugin-discover build   [--index-dir <dir>] [--json] [--quiet]
 dsh-plugin-discover status  [--index-dir <dir>] [--json]
 dsh-plugin-discover search  <query> [--alt <text>]... [--limit <n>] \
                              [--preset strict|balanced|loose|off] \
-                             [--min-verification <0-5>] [--explain <id>] [--json]
+                             [--min-verification <0-5>] [--explain <id>] \
+                             [--readme] [--readme-max-chars <n>] [--json]
 dsh-plugin-discover model status [--index-dir <dir>] [--profile <name>] [--json]
 dsh-plugin-discover model pull   [--spec <spec>] [--profile <name>] \
                                   [--index-dir <dir>] [--dry-run] [--no-verify] [--json]
@@ -201,6 +206,7 @@ dsh-plugin-discover model status
 - 中文查询依赖 AI 补英文改写；改写偏了会带进相邻插件或漏掉目标。判断门槛能压掉一部分，压不干净。
 - 某些泛化场景（如"手机上用"类需求）召回可能偏弱。
 - `updatedAt` 来自目录数据；不在目录里的条目不显示更新时间。
+- 上游仓库判定依赖 catalog 的 title；没有 title 的副本可能仍作为独立条目出现。
 - 向量模式默认关闭；开启前需先显式拉取模型包。
 - 目前仅在 Windows 上验证过；macOS / Linux 理论可用，未实测。
 
