@@ -7,13 +7,15 @@ import { record } from './fixtures.js'
 import {
   GithubGuard,
   RateLimiter,
+  fetchGithubReadme,
+  fetchNpmReadme,
+  fetchReadmeText,
   githubGuard,
   githubNotice,
   parseGithubTarget,
   parseNpmTarget,
-  fetchGithubReadme,
-  fetchNpmReadme,
 } from '../lib/readme-source.js'
+import { createSearcher, explainWithReadme } from '../lib/search.js'
 import { vectorRerank } from '../lib/vector.js'
 import { textReport } from '../lib/report.js'
 import { VectorStore, hashText } from '../lib/vector-store.js'
@@ -416,3 +418,132 @@ test('three GitHub timeouts open the timeout circuit and the report shows the no
   assert.ok(report.startsWith('⚠️ '), report.split('\n')[0])
   assert.match(report, /timed out/i)
 }))
+
+test('fetchReadmeText returns the raw README from the pinned GitHub ref', async () => {
+  githubGuard.reset()
+  const body = '# dsh-loghud\n\nLive HUD.\n\nInstall: dsh plugin add dsh-loghud\n'
+  const result = await fetchReadmeText(record({
+    id: 'dsh-loghud',
+    name: 'dsh-loghud',
+    alias: 'dsh-loghud',
+    repo: '',
+    install: { target: 'github:XuXcode/dsh-loghud#v0.3.0' },
+  }), {
+    fetchImpl: async () => response(200, body),
+  })
+  assert.equal(result.available, true)
+  assert.equal(result.source, 'github-raw')
+  assert.equal(result.ref, 'v0.3.0')
+  assert.equal(result.text, body, 'the README is not cleaned or token-truncated')
+  assert.equal(result.truncated, false)
+  assert.match(result.url, /raw\.githubusercontent\.com\/XuXcode\/dsh-loghud\/v0\.3\.0\/README\.md$/)
+  githubGuard.reset()
+})
+
+test('fetchReadmeText caps the text at maxChars and marks truncation', async () => {
+  githubGuard.reset()
+  const result = await fetchReadmeText(record({
+    repo: '',
+    install: { target: 'github:acme/long#HEAD' },
+  }), {
+    maxChars: 12,
+    fetchImpl: async () => response(200, 'abcdefghijklmnop'),
+  })
+  assert.equal(result.text, 'abcdefghijkl')
+  assert.equal(result.chars, 12)
+  assert.equal(result.truncated, true)
+  githubGuard.reset()
+})
+
+test('fetchReadmeText falls back to the npm CDN when GitHub has no README', async () => {
+  githubGuard.reset()
+  const urls = []
+  const result = await fetchReadmeText(record({
+    repo: 'https://github.com/acme/a',
+    install: { target: 'dsh-im-connect' },
+  }), {
+    fetchImpl: async url => {
+      urls.push(url)
+      if (url.includes('raw.githubusercontent.com')) return response(404)
+      if (url.includes('registry.npmjs.org')) return response(200, JSON.stringify({ 'dist-tags': { latest: '1.2.3' } }))
+      if (url.includes('unpkg.com')) return response(200, '# npm readme')
+      return response(404)
+    },
+  })
+  assert.equal(result.available, true)
+  assert.equal(result.source, 'npm-cdn')
+  assert.equal(result.provider, 'unpkg')
+  assert.equal(result.text, '# npm readme')
+  assert.ok(urls.some(url => url.includes('raw.githubusercontent.com/acme/a')))
+  assert.ok(urls.some(url => url.includes('unpkg.com/dsh-im-connect@1.2.3/README.md')))
+  githubGuard.reset()
+})
+
+test('fetchReadmeText reports no-source when a record has neither target', async () => {
+  githubGuard.reset()
+  const result = await fetchReadmeText(record({
+    repo: '', name: '', alias: '', install: { target: '' },
+  }), { fetchImpl: async () => response(404) })
+  assert.equal(result.available, false)
+  assert.equal(result.reason, 'no-source')
+})
+
+test('fetchReadmeText skips GitHub while the circuit is open and uses npm', async () => {
+  githubGuard.reset()
+  githubGuard.open(Date.now(), 'rate-limit')
+  const urls = []
+  const result = await fetchReadmeText(record({
+    repo: 'https://github.com/acme/b',
+    install: { target: '@scope/b@1.0.0' },
+  }), {
+    fetchImpl: async url => {
+      urls.push(url)
+      if (url.includes('unpkg.com')) return response(200, '# npm readme')
+      return response(404)
+    },
+  })
+  assert.equal(result.available, true)
+  assert.equal(result.source, 'npm-cdn')
+  assert.match(result.notice, /rate-limited/i)
+  assert.ok(!urls.some(url => url.includes('raw.githubusercontent.com')))
+  githubGuard.reset()
+})
+
+test('explainWithReadme fetches only on request and the report shows the text', async () => {
+  githubGuard.reset()
+  const searcher = createSearcher([record({
+    id: 'dsh-loghud',
+    name: 'dsh-loghud',
+    alias: 'dsh-loghud',
+    repo: '',
+    install: { target: 'github:XuXcode/dsh-loghud#v0.3.0' },
+  })])
+  const plain = await explainWithReadme(searcher, 'dsh-loghud', {
+    fetchImpl: async () => {
+      throw new Error('must not fetch without readme: true')
+    },
+  })
+  assert.equal(plain.explain.found, true)
+  assert.equal(plain.readme, undefined)
+
+  const withReadme = await explainWithReadme(searcher, 'dsh-loghud', {
+    readme: true,
+    fetchImpl: async () => response(200, '# dsh-loghud\n\nLive HUD.'),
+  })
+  assert.equal(withReadme.readme.available, true)
+  const report = textReport(withReadme, {})
+  assert.match(report, /README（github-raw · v0\.3\.0/)
+  assert.match(report, /Live HUD\./)
+  githubGuard.reset()
+})
+
+test('the detail report marks a README that could not be fetched', () => {
+  const report = textReport({
+    query: '',
+    noMatch: false,
+    results: [],
+    explain: { found: true, id: 'x', name: 'x', description: 'd' },
+    readme: { available: false, reason: 'not-found' },
+  }, {})
+  assert.match(report, /README：未获取到（not-found）/)
+})

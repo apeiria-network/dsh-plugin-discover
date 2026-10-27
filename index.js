@@ -8,7 +8,7 @@ import Schema from '@deepseek-ai/schemastery'
 import { defaultIndexDir } from './lib/paths.js'
 import { PRESETS } from './lib/filters.js'
 import { createRuntime, coverageOf } from './lib/runtime.js'
-import { explain, search, DEFAULT_NOISE_FILTER, NOISE_FILTERS } from './lib/search.js'
+import { explainWithReadme, search, DEFAULT_NOISE_FILTER, NOISE_FILTERS } from './lib/search.js'
 import { disposeVectorRuntime } from './lib/vector.js'
 import { textReport } from './lib/report.js'
 import { ATTRIBUTION } from './lib/normalize.js'
@@ -182,7 +182,7 @@ export function apply(ctx, config) {
       '`refresh: true` starts an index build in the background and returns immediately; it does not block the session.',
       'Pass `query` as the user\'s original wording, do not paraphrase it.',
       'For a Chinese query, always pass three `queryAlts`: (1) an English/term rewrite (required for recall, because the catalog is mostly English), (2) 3–5 capability keywords, (3) one sentence describing when it is used.',
-      'Use `explain` with a result id to fetch one plugin\'s full record without searching.',
+      'Use `explain` with a result id to fetch one plugin\'s full record without searching; add `readme: true` to include its README.',
     ].join(' '),
     parameters: {
       query: {
@@ -202,7 +202,15 @@ export function apply(ctx, config) {
       },
       explain: {
         type: 'string',
-        description: 'A result id (or exact plugin name / install target). Returns that record instead of searching.',
+        description: 'A result id (or exact plugin name / install target). Returns that record instead of searching. Pass an empty `query` when using explain.',
+      },
+      readme: {
+        type: 'boolean',
+        description: 'Only used with `explain`: also fetch that plugin\'s README as raw Markdown. The text can be very large (default cap 200,000 characters, roughly 50k tokens), so set `readmeMaxChars` when you only need part of it or when the README would flood the context; the result marks `readme.truncated` when the cap applies.',
+      },
+      readmeMaxChars: {
+        type: 'integer',
+        description: 'Character cap for the README text returned when `readme: true`; default 200000. Lower it (for example to 20000) to keep the session context small. Not used without `readme`.',
       },
       refresh: {
         type: 'boolean',
@@ -232,6 +240,7 @@ export function apply(ctx, config) {
           gates: { type: 'object', additionalProperties: true },
           coverage: { type: 'object', additionalProperties: true },
           explain: { type: 'object', additionalProperties: true },
+          readme: { type: 'object', additionalProperties: true },
           refresh: { type: 'object', additionalProperties: true },
           indexing: { type: 'boolean' },
           indexMissing: { type: 'boolean' },
@@ -298,9 +307,12 @@ export function apply(ctx, config) {
             explain: { found: false, id: explainId },
           }
         }
-        return explain(state.current.searcher, explainId, {
+        return explainWithReadme(state.current.searcher, explainId, {
           query,
           coverage: coverageOf(state.current.manifest),
+          readme: args.readme === true,
+          readmeMaxChars: args.readmeMaxChars,
+          readmeOptions: readmeOptions(config),
         })
       }
 
