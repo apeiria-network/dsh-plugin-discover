@@ -2,6 +2,7 @@
 
 ## 1.0.2 — 2026-10-27
 
+- **去重与上游归并**：同一安装目标、同一上游仓库（catalog `title`）只保留一张卡；fork 与重传副本并入 canonical，记录在 `copies`（不参与检索，`explain` 可查）；`repoHealth.renamedTo` 先解析到最终仓库；上游已删除且只能从 GitHub 安装的条目不再返回。克隆仅在“同仓库名 + 描述近乎一致”时合并，同名但描述不同的独立项目保持独立。索引 `format` 升为 2，`manifest.stats.dedupe` 记录合并数。
 - **`explain` 可以同时取回 README**：`plugin_discover` 新增 `readme` 与 `readmeMaxChars` 参数。`readme: true` 时，在插件详情之外返回该插件对应仓库的 README 原文（GitHub raw → npm CDN），默认上限 200,000 字符，超限时标记 `truncated`。CLI 对应 `search --explain <id> --readme [--readme-max-chars <n>]`。
 - **`limit` 参数补充默认值与说明**：类型改为 `integer`，默认 10，描述明确「用户明确要求条数时才传；硬上限 20」。
 

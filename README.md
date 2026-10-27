@@ -88,7 +88,7 @@ your original words + up to 3 AI rewrites
 - **Not every term must match**: lexical search combines terms with OR, so long Chinese sentences still return results; names and topics weigh more than descriptions.
 - **`noMatch` is a correct result**: when there is not enough evidence that a matching plugin exists, the tool returns empty and suggests rephrasing instead of forcing a candidate. Better empty than misleading.
 - **Duplicate entries are merged**: one card per install target and upstream repository; forks and re-uploaded copies fold into the upstream and no longer appear separately. Same-named but distinct projects are never force-merged.
-- **Deleted plugins are not returned**: entries whose upstream repository is gone do not appear in results.
+- **Uninstallable entries are not returned**: plugins whose upstream repository is gone and that can only be installed from GitHub do not appear in results.
 - **The local index goes stale**: the report header carries a "data as of" date; when the index exceeds the update cycle (one week by default), the next search refreshes it first and waits for success; only a failed refresh falls back to the old index, with a clear notice.
 
 ## Tool parameters
@@ -207,7 +207,7 @@ Network behavior (only `high` goes online):
 - Chinese queries depend on the AI's English rewrite; a drifted rewrite can pull in adjacent plugins or miss the target. The evidence gates suppress part of it, not all of it.
 - Some broad scenarios (e.g. "use it from my phone" needs) may recall weakly.
 - `updatedAt` comes from catalog data; entries outside the catalog show no update date.
-- Upstream detection relies on the repository information in the directory; copies without it may still appear as separate entries.
+- Upstream detection relies on the catalog title; copies without one may still appear as separate entries.
 - Vector mode is off by default; pull the model package before enabling it.
 - Verified on Windows only; macOS / Linux should work in theory but are untested.
 
